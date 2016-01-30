@@ -19,33 +19,71 @@ int h; // hour
 int mon; // month
 int d; // day
 String hol; // holiday
-
-class ethanSchedule { //class to contain scheduele with functions returning what classes ethan has
-
-}
-
-ethanSchedule ethan; //create instance of class to use its functions
+String p1;
+String p2;
+String p3;
+String p4;
 
 void setup() { //code runs once
 size(400, 700);
-strokeWeight(4);
-rect(0, 0, 400 - 1, 700 - 2); //add offset for the stroke to look even around the screen
+noStroke();
+rect(0, 0, 400, 700);
 hol = "Day is a Holiday!";
 }
-
+void update() { //function responsible for updating p1-p4 strings with the correct class depending on the day number
+  if (dayNum == 1) {
+    p1 = "Comm. Tech";
+    p2 = "Gym";
+    p3 = "English";
+    p4 = "Instrumental";
+  }
+  if (dayNum == 2) {
+    p1 = "Science";
+    p2 = "Computer Science";
+    p3 = "French";
+    p4 = "Math";
+  }
+  if (dayNum == 3) {
+    p1 = "Instrumental";
+    p2 = "Gym";
+    p3 = "English";
+    p4 = "Comm. Tech";
+  }
+  if (dayNum == 4) {
+    p1 = "Math";
+    p2 = "Computer Science";
+    p3 = "French";
+    p4 = "Science";
+  }
+  if (dayNum == 9) {
+    p1 = "H";
+    p2 = "H";
+    p3 = "H";
+    p4 = "H";
+  }
+}
 void draw() { //loop
   s = second();  //update time variables to determine the day number and what period it is because draw function is a loop
   m = minute();
   h = hour();
   mon = month();
   d = day();
+  background(255);
+  update(); // call update to keep Schedule up to date
+  textSize(32); //add text styling
+  fill(0);
+  smooth();
   dayNum = schoolYear[mon-1][d]; // gets daynumber from array using current month and day and updates it in the loop
   if (dayNum == 9) { // tell the user it is holiday if dayNum = 9 because 9 represents holidays in the array
-    textSize(32); //add text styling
-    fill(0);
-    smooth();
     text(hol, 10, 50);
   }else{
     text("Day " + dayNum, 10, 50);
   }
+  text("Schedule:", 10, 120);
+  //draw scheduele in the remaining canvas space
+  textSize(30);
+  text("Period 1: " + p1, 10, 190);
+  text("Period 2: " + p2, 10, 290);
+  text("Period 3: " + p3, 10, 390);
+  text("Period 4: " + p4, 10, 490);
 }
