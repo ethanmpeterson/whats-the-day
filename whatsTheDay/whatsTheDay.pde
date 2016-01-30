@@ -18,7 +18,7 @@ int m; // minute
 int h; // hour
 int mon; // month
 int d; // day
-String h; // holiday
+String hol; // holiday
 boolean holiday;
 
 class ethanSchedule { //class to contain scheduele with functions returning day number and what classes ethan has
@@ -26,6 +26,7 @@ int dayNumber() {
   dayNum = schoolYear[mon-1][d]; // gets daynumber from array using current month and day and the function returns it
   if (dayNum == 9) {
     holiday = true;
+    return 1;
     }else{
       holiday = false;
       return dayNum;
@@ -33,11 +34,13 @@ int dayNumber() {
   }
 }
 
+ethanSchedule ethan; //create instance of class to use its functions
+
 void setup() { //code runs once
 size(400, 700);
 strokeWeight(3); //adding black lining around the shapes being drawn below
 rect(0, 0, 400, 700);
-h = "Holiday!";
+hol = "is a Holiday!";
 }
 
 void draw() { //loop
@@ -46,4 +49,5 @@ void draw() { //loop
   h = hour();
   mon = month();
   d = day();
+  //text("Day")
 }
