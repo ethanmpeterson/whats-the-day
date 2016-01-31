@@ -18,42 +18,83 @@ int m; // minute
 int h; // hour
 int mon; // month
 int d; // day
+int rectX;
+int rectY;
+int rectWidth;
+int rectHeight;
 String hol; // holiday
 String p1;
 String p2;
 String p3;
 String p4;
+String p1Time; //these strings will hold what time each class takes place at
+String p2Time;
+String p3Time;
+String p4Time;
+color highLight;
 
 void setup() { //code runs once
 size(400, 700);
 noStroke();
 rect(0, 0, 400, 700);
-hol = "Day is a Holiday!";
+highLight = color(255);
+rectX = 280;
+rectY = 80;
+rectWidth = 100;
+rectHeight = 50;
+hol = "Today is a Holiday!";
+p1Time = "  (8:15 AM - 9:15 AM)";
+p2Time = "  (9:35 AM - 10:50 AM)";
+p3Time = "  (11:15 AM - 12:30 PM)";
+p4Time = "  (1:25 PM - 2:40 PM)";
+}
+
+boolean overRect(int x, int y, int width, int height) { // code snippet to form button from processing reference
+  if (mouseX >= x && mouseX <= x+width && //returns true if mouse is hovering over rectangle specified
+      mouseY >= y && mouseY <= y+height) {
+      return true;
+  }else{
+    return false;
+  }
+}
+
+void changeDate() { // function will be used to create a button allowing the user to type in a date letting them see their Schedule on that day
+  stroke(3);
+  fill(209, 209, 209);
+  rect(rectX, rectY, rectWidth, rectHeight);
+  if (overRect(rectX, rectY, rectWidth, rectHeight)) {
+    fill(255);
+    rect(rectX, rectY, rectWidth, rectHeight);
+    if (mousePressed) {
+      println("button clicked!"); //evantually clicking this button will create a text box taking a date as input for
+      //user to see their schedule on that day
+    }
+  }
 }
 void update() { //function responsible for updating p1-p4 strings with the correct class depending on the day number
   if (dayNum == 1) {
-    p1 = "Comm. Tech";
-    p2 = "Gym";
-    p3 = "English";
-    p4 = "Instrumental";
+    p1 = "Comm. Tech" + p1Time;
+    p2 = "Gym" + p2Time;
+    p3 = "English" + p3Time;
+    p4 = "Instrumental" + p4Time;
   }
   if (dayNum == 2) {
-    p1 = "Science";
-    p2 = "Computer Science";
-    p3 = "French";
-    p4 = "Math";
+    p1 = "Science" + p1Time;
+    p2 = "Computer Science" + p2Time;
+    p3 = "French" + p3Time;
+    p4 = "Math" + p4Time;
   }
   if (dayNum == 3) {
-    p1 = "Instrumental";
-    p2 = "Gym";
-    p3 = "English";
-    p4 = "Comm. Tech";
+    p1 = "Instrumental" + p1Time;
+    p2 = "Gym" + p2Time;
+    p3 = "English" + p3Time;
+    p4 = "Comm. Tech" + p4Time;
   }
   if (dayNum == 4) {
-    p1 = "Math";
-    p2 = "Computer Science";
-    p3 = "French";
-    p4 = "Science";
+    p1 = "Math" + p1Time;
+    p2 = "Computer Science" + p2Time;
+    p3 = "French" + p3Time;
+    p4 = "Science" + p4Time;
   }
   if (dayNum == 9) {
     p1 = "H";
@@ -69,6 +110,7 @@ void draw() { //loop
   mon = month();
   d = day();
   background(255);
+  changeDate();
   update(); // call update to keep Schedule up to date
   textSize(32); //add text styling
   fill(0);
