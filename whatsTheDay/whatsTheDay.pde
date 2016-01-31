@@ -1,3 +1,8 @@
+//import controlP5.*; //import gui lib for to use text fields as the development of the textBox function is more
+//difficult than expected and the use of this library will allow me to get on with the rest of the program
+//ControlP5 cp5;
+//Textfield month; //textfield where user may input the month into the changeDate function
+
 int[][] schoolYear = {
   {9, 9, 9, 9, 0, 4, 1, 2, 3, 9, 9, 4, 1, 2, 3, 4, 9, 9, 1, 2, 3, 4, 1, 9, 9, 2, 3, 4, 1, 2, 9, 9}, // January
   {9, 3, 4, 1, 2, 3, 9, 9, 4, 1, 2, 3, 9, 9, 9, 9, 4, 1, 2, 3, 9, 9, 4, 1, 2, 3, 4, 9, 9, 1},       // February
@@ -30,11 +35,7 @@ int dayX; //variables to store values for rectangle being drawn for the user to 
 int dayY;
 int dayWidth;
 int dayHeight;
-int now;
-int prevMillis;
-int interval; //int will store time between blinks of the line as text is typed into the box
-boolean cButtonPressed; //will store whether the change date button has been pressed or not
-boolean cButtonAgain; //boolean returning true if the change date button gets pressed again after text box is displayed
+boolean cButtonPressed; //will record whether the change date button has been pressed or not
 String hol; // holiday
 String p1;
 String p2;
@@ -44,6 +45,8 @@ String p1Time; //these strings will hold what time each class takes place at
 String p2Time;
 String p3Time;
 String p4Time;
+String textValue = "";
+
 
 void setup() { //code runs once
 size(400, 700);
@@ -57,30 +60,29 @@ monthX = 280;
 monthY = 115;
 monthWidth = 50;
 monthHeight = 20;
-interval = 500; //in ms
 hol = "Today is a Holiday!";
 p1Time = "  (8:15 AM - 9:15 AM)";
 p2Time = "  (9:35 AM - 10:50 AM)";
 p3Time = "  (11:15 AM - 12:30 PM)";
 p4Time = "  (1:25 PM - 2:40 PM)";
 }
-
 boolean overRect(int x, int y, int width, int height) { // code snippet to form button from processing reference
   if (mouseX >= x && mouseX <= x + width && //returns true if mouse is hovering over rectangle specified
       mouseY >= y && mouseY <= y + height) {
-      return true;
+    return true;
   }else{
     return false;
   }
 }
 
-void textBox(int textX, int textY, int textWidth, int textHeight) {
+void textBox(int textX, int textY, int textWidth, int textHeight, String defaultText) {
   fill(255);
   stroke(5);
   rect(textX, textY, textWidth, textHeight); //create rectangle to house text box where user will input month and day to get schedule
-  line(textX + 5, textY + 5, textX + 5, textY + 15);
+  fill(150, 150, 150);
+  textSize(20);
+  text(defaultText, textX + 5, textY + 15);
 }
-
 void changeDate() { // function will be used to create a button allowing the user to type in a date letting them see their Schedule on that day
   stroke(5);
   fill(255);
@@ -96,13 +98,17 @@ void changeDate() { // function will be used to create a button allowing the use
     text("Change Date", rectX + 3, rectY + 20);
   if (mousePressed) {
     cButtonPressed = true;
-    cButtonAgain = false;
     }
   }
   if (cButtonPressed) { // have seperate if statement to ensure code continues to run even after the mouse is released
-    textBox(monthX, monthY, monthWidth, monthHeight);
+    textBox(monthX, monthY, monthWidth, monthHeight, "mm");
   }
 }
+
+void keyPressed() {
+
+}
+
 void update() { //function responsible for updating p1-p4 strings with the correct class depending on the day number
   if (dayNum == 1) {
     p1 = "Comm. Tech" + p1Time;
@@ -141,7 +147,6 @@ void draw() { //loop
   h = hour();
   mon = month();
   d = day();
-  now = millis(); //update a variable with millis value to draw textbox later
   background(255); //redraw background to prevent ghosting
   changeDate(); //call changeDate to check if someone pressed the button and change the day of the corresponding schedule
   update(); // call update to keep Schedule up to date
