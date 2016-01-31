@@ -22,6 +22,19 @@ int rectX;
 int rectY;
 int rectWidth;
 int rectHeight;
+int monthX; //variables to store values for rectangle being drawn for the user to input the month
+int monthY;
+int monthWidth;
+int monthHeight;
+int dayX; //variables to store values for rectangle being drawn for the user to input the day
+int dayY;
+int dayWidth;
+int dayHeight;
+int now;
+int prevMillis;
+int interval; //int will store time between blinks of the line as text is typed into the box
+boolean cButtonPressed; //will store whether the change date button has been pressed or not
+boolean cButtonAgain; //boolean returning true if the change date button gets pressed again after text box is displayed
 String hol; // holiday
 String p1;
 String p2;
@@ -31,17 +44,20 @@ String p1Time; //these strings will hold what time each class takes place at
 String p2Time;
 String p3Time;
 String p4Time;
-color highLight;
 
 void setup() { //code runs once
 size(400, 700);
 noStroke();
 rect(0, 0, 400, 700);
-highLight = color(255);
 rectX = 280;
 rectY = 80;
 rectWidth = 100;
-rectHeight = 50;
+rectHeight = 30;
+monthX = 280;
+monthY = 115;
+monthWidth = 50;
+monthHeight = 20;
+interval = 500; //in ms
 hol = "Today is a Holiday!";
 p1Time = "  (8:15 AM - 9:15 AM)";
 p2Time = "  (9:35 AM - 10:50 AM)";
@@ -50,25 +66,41 @@ p4Time = "  (1:25 PM - 2:40 PM)";
 }
 
 boolean overRect(int x, int y, int width, int height) { // code snippet to form button from processing reference
-  if (mouseX >= x && mouseX <= x+width && //returns true if mouse is hovering over rectangle specified
-      mouseY >= y && mouseY <= y+height) {
+  if (mouseX >= x && mouseX <= x + width && //returns true if mouse is hovering over rectangle specified
+      mouseY >= y && mouseY <= y + height) {
       return true;
   }else{
     return false;
   }
 }
 
+void textBox(int textX, int textY, int textWidth, int textHeight) {
+  fill(255);
+  stroke(5);
+  rect(textX, textY, textWidth, textHeight); //create rectangle to house text box where user will input month and day to get schedule
+  line(textX + 5, textY + 5, textX + 5, textY + 15);
+}
+
 void changeDate() { // function will be used to create a button allowing the user to type in a date letting them see their Schedule on that day
-  stroke(3);
-  fill(209, 209, 209);
+  stroke(5);
+  fill(255);
   rect(rectX, rectY, rectWidth, rectHeight);
+  fill(0);
+  textSize(15);
+  text("Change Date", rectX + 3, rectY + 20);
   if (overRect(rectX, rectY, rectWidth, rectHeight)) {
-    fill(255);
+    fill(209, 209, 209);
     rect(rectX, rectY, rectWidth, rectHeight);
-    if (mousePressed) {
-      println("button clicked!"); //evantually clicking this button will create a text box taking a date as input for
-      //user to see their schedule on that day
+    fill(0);
+    textSize(15);
+    text("Change Date", rectX + 3, rectY + 20);
+  if (mousePressed) {
+    cButtonPressed = true;
+    cButtonAgain = false;
     }
+  }
+  if (cButtonPressed) { // have seperate if statement to ensure code continues to run even after the mouse is released
+    textBox(monthX, monthY, monthWidth, monthHeight);
   }
 }
 void update() { //function responsible for updating p1-p4 strings with the correct class depending on the day number
@@ -109,8 +141,9 @@ void draw() { //loop
   h = hour();
   mon = month();
   d = day();
-  background(255);
-  changeDate();
+  now = millis(); //update a variable with millis value to draw textbox later
+  background(255); //redraw background to prevent ghosting
+  changeDate(); //call changeDate to check if someone pressed the button and change the day of the corresponding schedule
   update(); // call update to keep Schedule up to date
   textSize(32); //add text styling
   fill(0);
