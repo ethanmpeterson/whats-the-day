@@ -66,13 +66,22 @@ p2Time = "  (9:35 AM - 10:50 AM)";
 p3Time = "  (11:15 AM - 12:30 PM)";
 p4Time = "  (1:25 PM - 2:40 PM)";
 }
-boolean overRect(int x, int y, int width, int height) { // code snippet to form button from processing reference
+boolean overRect(int x, int y, int width, int height) { // code snippet to form button from processing reference button example
   if (mouseX >= x && mouseX <= x + width && //returns true if mouse is hovering over rectangle specified
       mouseY >= y && mouseY <= y + height) {
     return true;
   }else{
     return false;
   }
+}
+
+boolean overTri(int x1, int y1, int x2, int y2, int x3, int y3, int px, int py) { //code snippet from GitHub to detect collision of triangle and point
+  int a0 = abs((x2-x1)*(y3-y1)-(x3-x1)*(y2-y1)); //https://github.com/jeffThompson/CollisionDetectionFunctionsForProcessing/blob/master/pointTriangle/pointTriangle.pde
+  int a1 = abs((x1-px)*(y2-py)-(x2-px)*(y1-py));
+  int a2 = abs((x2-px)*(y3-py)-(x3-px)*(y2-py));
+  int a3 = abs((x3-px)*(y1-py)-(x1-px)*(y3-py));
+
+  return (abs(a1+a2+a3 - a0) <= 1/256);
 }
 
 void textBox(int textX, int textY, int textWidth, int textHeight, String defaultText) {
@@ -102,6 +111,18 @@ void changeDate() { // function will be used to create a button allowing the use
   }
   if (cButtonPressed) { // have seperate if statement to ensure code continues to run even after the mouse is released
     textBox(monthX, monthY, monthWidth, monthHeight, "mm");
+    fill(255);
+    stroke(5);
+    triangle(monthX + 65, monthY, monthX + 55, monthY + 10, monthX + 75, monthY + 10); //draw month incriment button
+    triangle(monthX + 65, monthY + 25, monthX + 55, monthY + 15, monthX + 75, monthY + 15); //draw month decriment button
+    if (overTri(monthX + 65, monthY + 25, monthX + 55, monthY + 15, monthX + 75, monthY + 15, mouseX, mouseY)) { //fill the incriment/decriment triangles grey when the mouse hovers over them
+      fill(209,209,209);
+      triangle(monthX + 65, monthY + 25, monthX + 55, monthY + 15, monthX + 75, monthY + 15);
+    }
+    if (overTri(monthX + 65, monthY, monthX + 55, monthY + 10, monthX + 75, monthY + 10, mouseX, mouseY)) {
+      fill(209,209,209);
+      triangle(monthX + 65, monthY, monthX + 55, monthY + 10, monthX + 75, monthY + 10);
+    }
   }
 }
 
