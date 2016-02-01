@@ -1,8 +1,3 @@
-//import controlP5.*; //import gui lib for to use text fields as the development of the textBox function is more
-//difficult than expected and the use of this library will allow me to get on with the rest of the program
-//ControlP5 cp5;
-//Textfield month; //textfield where user may input the month into the changeDate function
-
 int[][] schoolYear = {
   {9, 9, 9, 9, 0, 4, 1, 2, 3, 9, 9, 4, 1, 2, 3, 4, 9, 9, 1, 2, 3, 4, 1, 9, 9, 2, 3, 4, 1, 2, 9, 9}, // January
   {9, 3, 4, 1, 2, 3, 9, 9, 4, 1, 2, 3, 9, 9, 9, 9, 4, 1, 2, 3, 9, 9, 4, 1, 2, 3, 4, 9, 9, 1},       // February
@@ -35,7 +30,10 @@ int dayX; //variables to store values for rectangle being drawn for the user to 
 int dayY;
 int dayWidth;
 int dayHeight;
+int dayInput;
+int monthInput;
 boolean cButtonPressed; //will record whether the change date button has been pressed or not
+boolean triPressed; // records whether a triangular button has been pressed or not
 String hol; // holiday
 String p1;
 String p2;
@@ -60,6 +58,7 @@ monthX = 280;
 monthY = 115;
 monthWidth = 50;
 monthHeight = 20;
+monthInput = month();
 hol = "Today is a Holiday!";
 p1Time = "  (8:15 AM - 9:15 AM)";
 p2Time = "  (9:35 AM - 10:50 AM)";
@@ -118,17 +117,38 @@ void changeDate() { // function will be used to create a button allowing the use
     if (overTri(monthX + 65, monthY + 25, monthX + 55, monthY + 15, monthX + 75, monthY + 15, mouseX, mouseY)) { //fill the incriment/decriment triangles grey when the mouse hovers over them
       fill(209,209,209);
       triangle(monthX + 65, monthY + 25, monthX + 55, monthY + 15, monthX + 75, monthY + 15);
+      if (mousePressed) {
+        monthInput--;
+        triPressed = true;
+      }
     }
     if (overTri(monthX + 65, monthY, monthX + 55, monthY + 10, monthX + 75, monthY + 10, mouseX, mouseY)) {
       fill(209,209,209);
       triangle(monthX + 65, monthY, monthX + 55, monthY + 10, monthX + 75, monthY + 10);
+      if (mousePressed) {
+        monthInput++;
+        triPressed = true;
+      }
+    }
+  }
+  if (monthInput > 12 || monthInput < 1) {
+    monthInput = 1;
+  }
+  if (triPressed) {
+    fill(255);
+    noStroke();
+    rect(monthX + 5, monthY + 3, monthWidth - 10, monthHeight - 3);
+    textSize(20);
+    fill(0);
+    text(monthInput, monthX + 10, monthY + 17);
+  }
+  if (keyPressed) {
+    if (keyCode == ENTER) {
+      dayNum = schoolYear[monthInput-1][dayInput];
     }
   }
 }
 
-void keyPressed() {
-
-}
 
 void update() { //function responsible for updating p1-p4 strings with the correct class depending on the day number
   if (dayNum == 1) {
@@ -174,7 +194,10 @@ void draw() { //loop
   textSize(32); //add text styling
   fill(0);
   smooth();
-  dayNum = schoolYear[mon-1][d]; // gets daynumber from array using current month and day and updates it in the loop
+  if (!cButtonPressed) {
+    dayNum = schoolYear[mon-1][d]; // gets daynumber from array using current month and day and updates it in the loop
+    //as long as the change date button has not been pressed
+  }
   if (dayNum == 9) { // tell the user it is holiday if dayNum = 9 because 9 represents holidays in the array
     text(hol, 10, 50);
   }else{
