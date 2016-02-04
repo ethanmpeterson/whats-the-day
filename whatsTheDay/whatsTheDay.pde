@@ -35,7 +35,9 @@ int monthInput;
 boolean cButtonPressed; //will record whether the change date button has been pressed or not
 boolean triPressed; // records whether a triangular button has been pressed or not
 boolean monthSwitch; //records that user is has inputted the month and is ready to input the day
-boolean dayTriPressed;
+boolean dayTriPressed; //records if the user has pressed the incriment or decriment buttons of the day text box
+boolean isFeb; //true if the month is february
+boolean month31;
 String hol; // holiday
 String p1;
 String p2;
@@ -66,7 +68,7 @@ dayX = 280;
 dayY = 150;
 dayWidth = 50;
 dayHeight = 20;
-hol = "Today is a Holiday!";
+hol = "Holiday!";
 p1Time = "  (8:15 AM - 9:15 AM)";
 p2Time = "  (9:35 AM - 10:50 AM)";
 p3Time = "  (11:15 AM - 12:30 PM)";
@@ -98,6 +100,23 @@ void textBox(int textX, int textY, int textWidth, int textHeight, String default
   textSize(20);
   text(defaultText, textX + 5, textY + 15);
 }
+
+void button(int bx, int by, int bWidth, int bHeight, String bLabel, int textSize) {
+  fill(255);
+  stroke(5);
+  rect(bx, by, bWidth, bHeight);
+  fill(0);
+  textSize(textSize);
+  text(bLabel, bx + 20, by + 22);
+  if (overRect(bx, by, bWidth, bHeight)) {
+    fill(209,209,209);
+    rect(bx, by, bWidth, bHeight);
+    fill(0);
+    textSize(textSize);
+    text(bLabel, bx + 20, by + 22);
+  }
+}
+
 void changeDate() { // function will be used to create a button allowing the user to type in a date letting them see their Schedule on that day
   stroke(5);
   fill(255);
@@ -117,10 +136,13 @@ void changeDate() { // function will be used to create a button allowing the use
   }
   if (cButtonPressed) { // have seperate if statement to ensure code continues to run even after the mouse is released
     textBox(monthX, monthY, monthWidth, monthHeight, "mm");
+    button(rectX, rectY - 40, rectWidth, rectHeight, "Today", 20);
     fill(255);
     stroke(5);
     triangle(monthX + 65, monthY, monthX + 55, monthY + 10, monthX + 75, monthY + 10); //draw month incriment button
     triangle(monthX + 65, monthY + 25, monthX + 55, monthY + 15, monthX + 75, monthY + 15); //draw month decriment button
+    //draw today button which will take user to the current date
+
     if (overTri(monthX + 65, monthY + 25, monthX + 55, monthY + 15, monthX + 75, monthY + 15, mouseX, mouseY)) { //fill the incriment/decriment triangles grey when the mouse hovers over them
       fill(209,209,209);
       triangle(monthX + 65, monthY + 25, monthX + 55, monthY + 15, monthX + 75, monthY + 15);
@@ -226,6 +248,8 @@ void update() { //function responsible for updating p1-p4 strings with the corre
     p3 = "H";
     p4 = "H";
   }
+  //update isFeb and month31 booleans here to make sure the month is being counted correctly and the array does not go out of bounds
+  
 }
 void draw() { //loop
   s = second();  //update time variables to determine the day number and what period it is because draw function is a loop
