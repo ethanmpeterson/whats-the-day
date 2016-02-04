@@ -34,6 +34,8 @@ int dayInput;
 int monthInput;
 boolean cButtonPressed; //will record whether the change date button has been pressed or not
 boolean triPressed; // records whether a triangular button has been pressed or not
+boolean monthSwitch; //records that user is has inputted the month and is ready to input the day
+boolean dayTriPressed;
 String hol; // holiday
 String p1;
 String p2;
@@ -59,6 +61,11 @@ monthY = 115;
 monthWidth = 50;
 monthHeight = 20;
 monthInput = month();
+dayInput = day();
+dayX = 280;
+dayY = 150;
+dayWidth = 50;
+dayHeight = 20;
 hol = "Today is a Holiday!";
 p1Time = "  (8:15 AM - 9:15 AM)";
 p2Time = "  (9:35 AM - 10:50 AM)";
@@ -131,8 +138,10 @@ void changeDate() { // function will be used to create a button allowing the use
       }
     }
   }
-  if (monthInput > 12 || monthInput < 1) {
+  if (monthInput > 12) {
     monthInput = 1;
+  }else if (monthInput < 1) {
+    monthInput = 12;
   }
   if (triPressed) {
     fill(255);
@@ -142,9 +151,45 @@ void changeDate() { // function will be used to create a button allowing the use
     fill(0);
     text(monthInput, monthX + 10, monthY + 17);
   }
-  if (keyPressed) {
-    if (keyCode == ENTER) {
-      dayNum = schoolYear[monthInput-1][dayInput];
+  if (keyPressed && triPressed) {
+    if (key == ENTER) {
+      monthSwitch = true;
+    }
+  }
+  if (monthSwitch) {
+    textBox(dayX, dayY, dayWidth, dayHeight, "dd");
+    stroke(5);
+    fill(255); //make triangles white
+    triangle(dayX + 65, dayY, dayX + 55, dayY + 10, dayX + 75, dayY + 10); //draw day incriment button
+    triangle(dayX + 65, dayY + 25, dayX + 55, dayY + 15, dayX + 75, dayY + 15); //draw day decriment button
+    if (overTri(dayX + 65, dayY, dayX + 55, dayY + 10, dayX + 75, dayY + 10, mouseX, mouseY)) { //check if mouse is over incriment button
+      fill(209,209,209);
+      triangle(dayX + 65, dayY, dayX + 55, dayY + 10, dayX + 75, dayY + 10); //draw grey triangle at the same cordinates to make it look like the triangle is highlighted when the mouse hovers over
+      if (mousePressed) {
+        dayInput++;
+        dayTriPressed = true;
+      }
+    }
+    if (overTri(dayX + 65, dayY + 25, dayX + 55, dayY + 15, dayX + 75, dayY + 15, mouseX, mouseY)) { //do the same for decriment button
+      fill(209,209,209);
+      triangle(dayX + 65, dayY + 25, dayX + 55, dayY + 15, dayX + 75, dayY + 15);
+      if (mousePressed) {
+        dayInput--;
+        dayTriPressed = true;
+      }
+    }
+  }
+  if (dayTriPressed) {
+    fill(255);
+    noStroke();
+    rect(dayX + 5, dayY + 3, dayWidth - 10, dayHeight - 3);
+    textSize(20);
+    fill(0);
+    text(dayInput, dayX + 10, dayY + 17);
+    if (keyPressed && dayTriPressed) {
+      if (key == ENTER) {
+        dayNum = schoolYear[monthInput - 1][dayInput];
+      }
     }
   }
 }
@@ -159,7 +204,7 @@ void update() { //function responsible for updating p1-p4 strings with the corre
   }
   if (dayNum == 2) {
     p1 = "Science" + p1Time;
-    p2 = "Computer Science" + p2Time;
+    p2 = "Software" + p2Time;
     p3 = "French" + p3Time;
     p4 = "Math" + p4Time;
   }
@@ -171,7 +216,7 @@ void update() { //function responsible for updating p1-p4 strings with the corre
   }
   if (dayNum == 4) {
     p1 = "Math" + p1Time;
-    p2 = "Computer Science" + p2Time;
+    p2 = "Software" + p2Time;
     p3 = "French" + p3Time;
     p4 = "Science" + p4Time;
   }
@@ -205,8 +250,8 @@ void draw() { //loop
   }
   text("Schedule:", 10, 120);
   //draw scheduele in the remaining canvas space
-  textSize(30);
-  text("Period 1: " + p1, 10, 190);
+  textSize(17);
+  text("Period 1: " + p1, 10, 200);
   text("Period 2: " + p2, 10, 290);
   text("Period 3: " + p3, 10, 390);
   text("Period 4: " + p4, 10, 490);
