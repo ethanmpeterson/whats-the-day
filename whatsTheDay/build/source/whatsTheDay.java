@@ -1,3 +1,19 @@
+import processing.core.*; 
+import processing.data.*; 
+import processing.event.*; 
+import processing.opengl.*; 
+
+import java.util.HashMap; 
+import java.util.ArrayList; 
+import java.io.File; 
+import java.io.BufferedReader; 
+import java.io.PrintWriter; 
+import java.io.InputStream; 
+import java.io.OutputStream; 
+import java.io.IOException; 
+
+public class whatsTheDay extends PApplet {
+
 int[][] schoolYear = {
   {9, 9, 9, 9, 0, 4, 1, 2, 3, 9, 9, 4, 1, 2, 3, 4, 9, 9, 1, 2, 3, 4, 1, 9, 9, 2, 3, 4, 1, 2, 9, 9}, // January
   {9, 3, 4, 1, 2, 3, 9, 9, 4, 1, 2, 3, 9, 9, 9, 9, 4, 1, 2, 3, 9, 9, 4, 1, 2, 3, 4, 9, 9, 1},       // February
@@ -53,8 +69,8 @@ String p4Time;
 String textValue = "";
 
 
-void setup() { //code runs once
-size(400, 700);
+public void setup() { //code runs once
+
 noStroke();
 rect(0, 0, 400, 700);
 rectX = 280;
@@ -77,7 +93,7 @@ p2Time = "  (9:35 AM - 10:50 AM)";
 p3Time = "  (11:15 AM - 12:30 PM)";
 p4Time = "  (1:25 PM - 2:40 PM)";
 }
-boolean overRect(int x, int y, int width, int height) { // code snippet to form button from processing reference button example
+public boolean overRect(int x, int y, int width, int height) { // code snippet to form button from processing reference button example
   if (mouseX >= x && mouseX <= x + width && //returns true if mouse is hovering over rectangle specified
       mouseY >= y && mouseY <= y + height) {
     return true;
@@ -86,7 +102,7 @@ boolean overRect(int x, int y, int width, int height) { // code snippet to form 
   }
 }
 
-boolean buttonPressed(int bx, int by, int bWidth, int bHeight) { //pass button cordinates into function and returns true if the button is pressed or not
+public boolean buttonPressed(int bx, int by, int bWidth, int bHeight) { //pass button cordinates into function and returns true if the button is pressed or not
   if (mouseX >= bx && mouseX <= bx + width && //returns true if mouse is hovering over button specified
       mouseY >= by && mouseY <= by + height) {
       if (mousePressed) {
@@ -96,7 +112,7 @@ boolean buttonPressed(int bx, int by, int bWidth, int bHeight) { //pass button c
   return false;
 }
 
-boolean overTri(int x1, int y1, int x2, int y2, int x3, int y3, int px, int py) { //code snippet from GitHub to detect collision of triangle and point
+public boolean overTri(int x1, int y1, int x2, int y2, int x3, int y3, int px, int py) { //code snippet from GitHub to detect collision of triangle and point
   int a0 = abs((x2-x1)*(y3-y1)-(x3-x1)*(y2-y1)); //https://github.com/jeffThompson/CollisionDetectionFunctionsForProcessing/blob/master/pointTriangle/pointTriangle.pde
   int a1 = abs((x1-px)*(y2-py)-(x2-px)*(y1-py));
   int a2 = abs((x2-px)*(y3-py)-(x3-px)*(y2-py));
@@ -107,7 +123,7 @@ boolean overTri(int x1, int y1, int x2, int y2, int x3, int y3, int px, int py) 
 
 //boolean triPressed()
 
-void textBox(int textX, int textY, int textWidth, int textHeight, String defaultText) {
+public void textBox(int textX, int textY, int textWidth, int textHeight, String defaultText) {
   fill(255);
   stroke(5);
   rect(textX, textY, textWidth, textHeight); //create rectangle to house text box where user will input month and day to get schedule
@@ -116,7 +132,7 @@ void textBox(int textX, int textY, int textWidth, int textHeight, String default
   text(defaultText, textX + 5, textY + 15);
 }
 
-void button(int bx, int by, int bWidth, int bHeight, String bLabel, int textSize, int textX, int textY) {
+public void button(int bx, int by, int bWidth, int bHeight, String bLabel, int textSize, int textX, int textY) {
   fill(255);
   stroke(5);
   rect(bx, by, bWidth, bHeight);
@@ -132,8 +148,15 @@ void button(int bx, int by, int bWidth, int bHeight, String bLabel, int textSize
   }
 }
 
-void changeDate() { // function will be used to create a button allowing the user to type in a date letting them see their Schedule on that day
+public void changeDate() { // function will be used to create a button allowing the user to type in a date letting them see their Schedule on that day
+  //stroke(5);
+  //fill(255);
+  //rect(rectX, rectY, rectWidth, rectHeight);
+  //fill(0);
+  //textSize(15);
+  //text("Change Date", rectX + 3, rectY + 20);
   button(rectX, rectY, rectWidth, rectHeight, "Change Date", 15, rectX + 3, rectY + 20);
+  //button(rectX, rectY, rectWidth, rectHeight, "Change Date", 15);
   if (overRect(rectX, rectY, rectWidth, rectHeight)) {
     fill(209, 209, 209);
     rect(rectX, rectY, rectWidth, rectHeight);
@@ -227,7 +250,7 @@ void changeDate() { // function will be used to create a button allowing the use
 }
 
 
-void update() { //function responsible for updating p1-p4 strings with the correct class depending on the day number
+public void update() { //function responsible for updating p1-p4 strings with the correct class depending on the day number
   if (dayNum == 1) {
     p1 = "Comm. Tech" + p1Time;
     p2 = "Gym" + p2Time;
@@ -284,7 +307,7 @@ void update() { //function responsible for updating p1-p4 strings with the corre
     }
   }
 }
-void draw() { //loop
+public void draw() { //loop
   s = second();  //update time variables to determine the day number and what period it is because draw function is a loop
   m = minute();
   h = hour();
@@ -312,4 +335,15 @@ void draw() { //loop
   text("Period 2: " + p2, 10, 290);
   text("Period 3: " + p3, 10, 390);
   text("Period 4: " + p4, 10, 490);
+}
+  public void settings() { 
+size(400, 700); }
+  static public void main(String[] passedArgs) {
+    String[] appletArgs = new String[] { "whatsTheDay" };
+    if (passedArgs != null) {
+      PApplet.main(concat(appletArgs, passedArgs));
+    } else {
+      PApplet.main(appletArgs);
+    }
+  }
 }
