@@ -40,6 +40,7 @@ boolean dayTriPressed; //records if the user has pressed the incriment or decrim
 boolean isFeb; //true if the month is february
 boolean month31;
 boolean mouseC; //true if mouse is clicked then released
+boolean tPressed; //true if today button was pressed
 String hol; // holiday
 String p1;
 String p2;
@@ -71,11 +72,12 @@ dayY = 150;
 dayWidth = 50;
 dayHeight = 20;
 hol = "Holiday!";
-p1Time = "  (8:15 AM - 9:15 AM)";
+p1Time = "  (8:15 AM - 9:30 AM)";
 p2Time = "  (9:35 AM - 10:50 AM)";
 p3Time = "  (11:15 AM - 12:30 PM)";
 p4Time = "  (1:25 PM - 2:40 PM)";
 }
+
 boolean overRect(int x, int y, int width, int height) { // code snippet to form button from processing reference button example
   if (mouseX >= x && mouseX <= x + width && //returns true if mouse is hovering over rectangle specified
       mouseY >= y && mouseY <= y + height) {
@@ -83,16 +85,6 @@ boolean overRect(int x, int y, int width, int height) { // code snippet to form 
   }else{
     return false;
   }
-}
-
-boolean buttonPressed(int bx, int by, int bWidth, int bHeight) { //pass button cordinates into function and returns true if the button is pressed or not
-  if (mouseX >= bx && mouseX <= bx + width && //returns true if mouse is hovering over button specified
-      mouseY >= by && mouseY <= by + height) {
-      if (mousePressed) {
-        return true;
-      }
-  }
-  return false;
 }
 
 boolean overTri(int x1, int y1, int x2, int y2, int x3, int y3, int px, int py) { //code snippet from GitHub to detect collision of triangle and point
@@ -131,20 +123,20 @@ void button(int bx, int by, int bWidth, int bHeight, String bLabel, int textSize
 }
 
 void mouseClicked() {
-  if (overTri(monthX + 65, monthY + 25, monthX + 55, monthY + 15, monthX + 75, monthY + 15, mouseX, mouseY)) { //fill the incriment/decriment triangles grey when the mouse hovers over them
+  if (overTri(monthX + 65, monthY + 25, monthX + 55, monthY + 15, monthX + 75, monthY + 15, mouseX, mouseY) && cButtonPressed) { //fill the incriment/decriment triangles grey when the mouse hovers over them
     triPressed = true;
     monthInput--; //only incriment these variables when the mouse is pressed and released on the button preventing the variables from
     //fluctuating in value too quickly
   }
-  if (overTri(monthX + 65, monthY, monthX + 55, monthY + 10, monthX + 75, monthY + 10, mouseX, mouseY)) {
+  if (overTri(monthX + 65, monthY, monthX + 55, monthY + 10, monthX + 75, monthY + 10, mouseX, mouseY) && cButtonPressed) {
     triPressed = true;
     monthInput++;
   }
-  if (overTri(dayX + 65, dayY, dayX + 55, dayY + 10, dayX + 75, dayY + 10, mouseX, mouseY)) {
+  if (overTri(dayX + 65, dayY, dayX + 55, dayY + 10, dayX + 75, dayY + 10, mouseX, mouseY) && cButtonPressed) {
     dayTriPressed = true;
     dayInput++;
   }
-  if (overTri(dayX + 65, dayY + 25, dayX + 55, dayY + 15, dayX + 75, dayY + 15, mouseX, mouseY)) {
+  if (overTri(dayX + 65, dayY + 25, dayX + 55, dayY + 15, dayX + 75, dayY + 15, mouseX, mouseY) && cButtonPressed) {
     dayTriPressed = true;
     dayInput--;
   }
@@ -160,9 +152,11 @@ void changeDate() { // function will be used to create a button allowing the use
     text("Change Date", rectX + 3, rectY + 20);
   if (mousePressed) {
     cButtonPressed = true;
+    //tPressed = false;
     }
   }
   if (cButtonPressed) { // have seperate if statement to ensure code continues to run even after the mouse is released
+    tPressed = false;
     textBox(monthX, monthY, monthWidth, monthHeight, "mm");
     button(rectX, rectY - 40, rectWidth, rectHeight, "Today", 20, rectX + 20, rectY - 17);
     fill(255);
@@ -225,6 +219,22 @@ void changeDate() { // function will be used to create a button allowing the use
         dayNum = schoolYear[monthInput - 1][dayInput];
       }
     }
+  }
+  if (overRect(rectX, rectY - 40, rectWidth, rectHeight)) { //if today button is pressed set tPressed true
+    if (mousePressed && cButtonPressed) {
+      tPressed = true;
+    }else{
+      tPressed = false;
+    }
+  }
+  if (tPressed) {
+    noStroke();
+    fill(255);
+    rect(rectX, rectY - 40, rectWidth + 2, rectHeight + 2); //draw rect over today button to give impression it is dissapearing
+    cButtonPressed = false;
+    triPressed = false;
+    dayTriPressed = false;
+    monthSwitch = false;
   }
 }
 
@@ -300,7 +310,7 @@ void draw() { //loop
   smooth();
   if (!cButtonPressed) {
     dayNum = schoolYear[mon-1][d]; // gets daynumber from array using current month and day and updates it in the loop
-    //as long as the change date button has not been pressed
+    //as long as the change date button has not been pressed or the boolean was set false after the user pressing the today button
   }
   if (dayNum == 9) { // tell the user it is holiday if dayNum = 9 because 9 represents holidays in the array
     text(hol, 10, 50);
