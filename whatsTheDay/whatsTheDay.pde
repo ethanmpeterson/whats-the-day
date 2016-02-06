@@ -32,15 +32,14 @@ int dayWidth;
 int dayHeight;
 int dayInput;
 int monthInput;
-int interval; //these ints will be used to debounce buttons to allow the user to set month and day values more easily
-int now;
-int prevMillis;
+int prevMillis; //for debounce boolean
 boolean cButtonPressed; //will record whether the change date button has been pressed or not
 boolean triPressed; // records whether a triangular button has been pressed or not
 boolean monthSwitch; //records that user is has inputted the month and is ready to input the day
 boolean dayTriPressed; //records if the user has pressed the incriment or decriment buttons of the day text box
 boolean isFeb; //true if the month is february
 boolean month31;
+boolean mouseC; //true if mouse is clicked then released
 String hol; // holiday
 String p1;
 String p2;
@@ -105,7 +104,6 @@ boolean overTri(int x1, int y1, int x2, int y2, int x3, int y3, int px, int py) 
   return (abs(a1+a2+a3 - a0) <= 1/256);
 }
 
-//boolean triPressed()
 
 void textBox(int textX, int textY, int textWidth, int textHeight, String defaultText) {
   fill(255);
@@ -129,6 +127,26 @@ void button(int bx, int by, int bWidth, int bHeight, String bLabel, int textSize
     fill(0);
     textSize(textSize);
     text(bLabel, textX, textY);
+  }
+}
+
+void mouseClicked() {
+  if (overTri(monthX + 65, monthY + 25, monthX + 55, monthY + 15, monthX + 75, monthY + 15, mouseX, mouseY)) { //fill the incriment/decriment triangles grey when the mouse hovers over them
+    triPressed = true;
+    monthInput--; //only incriment these variables when the mouse is pressed and released on the button preventing the variables from
+    //fluctuating in value too quickly
+  }
+  if (overTri(monthX + 65, monthY, monthX + 55, monthY + 10, monthX + 75, monthY + 10, mouseX, mouseY)) {
+    triPressed = true;
+    monthInput++;
+  }
+  if (overTri(dayX + 65, dayY, dayX + 55, dayY + 10, dayX + 75, dayY + 10, mouseX, mouseY)) {
+    dayTriPressed = true;
+    dayInput++;
+  }
+  if (overTri(dayX + 65, dayY + 25, dayX + 55, dayY + 15, dayX + 75, dayY + 15, mouseX, mouseY)) {
+    dayTriPressed = true;
+    dayInput--;
   }
 }
 
@@ -156,18 +174,10 @@ void changeDate() { // function will be used to create a button allowing the use
     if (overTri(monthX + 65, monthY + 25, monthX + 55, monthY + 15, monthX + 75, monthY + 15, mouseX, mouseY)) { //fill the incriment/decriment triangles grey when the mouse hovers over them
       fill(209,209,209);
       triangle(monthX + 65, monthY + 25, monthX + 55, monthY + 15, monthX + 75, monthY + 15);
-      if (mousePressed) {
-        monthInput--;
-        triPressed = true;
-      }
     }
     if (overTri(monthX + 65, monthY, monthX + 55, monthY + 10, monthX + 75, monthY + 10, mouseX, mouseY)) {
       fill(209,209,209);
       triangle(monthX + 65, monthY, monthX + 55, monthY + 10, monthX + 75, monthY + 10);
-      if (mousePressed) {
-        monthInput++;
-        triPressed = true;
-      }
     }
   }
   if (monthInput > 12) {
@@ -197,18 +207,10 @@ void changeDate() { // function will be used to create a button allowing the use
     if (overTri(dayX + 65, dayY, dayX + 55, dayY + 10, dayX + 75, dayY + 10, mouseX, mouseY)) { //check if mouse is over incriment button
       fill(209,209,209);
       triangle(dayX + 65, dayY, dayX + 55, dayY + 10, dayX + 75, dayY + 10); //draw grey triangle at the same cordinates to make it look like the triangle is highlighted when the mouse hovers over
-      if (mousePressed) {
-        dayInput++;
-        dayTriPressed = true;
-      }
     }
     if (overTri(dayX + 65, dayY + 25, dayX + 55, dayY + 15, dayX + 75, dayY + 15, mouseX, mouseY)) { //do the same for decriment button
       fill(209,209,209);
       triangle(dayX + 65, dayY + 25, dayX + 55, dayY + 15, dayX + 75, dayY + 15);
-      if (mousePressed) {
-        dayInput--;
-        dayTriPressed = true;
-      }
     }
   }
   if (dayTriPressed) {
