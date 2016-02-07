@@ -32,7 +32,7 @@ int dayWidth;
 int dayHeight;
 int dayInput;
 int monthInput;
-int prevMillis; //for debounce boolean
+int time; //for returning the currenting period in currentPeriod function
 boolean cButtonPressed; //will record whether the change date button has been pressed or not
 boolean triPressed; // records whether a triangular button has been pressed or not
 boolean monthSwitch; //records that user is has inputted the month and is ready to input the day
@@ -50,6 +50,9 @@ String p1Time; //these strings will hold what time each class takes place at
 String p2Time;
 String p3Time;
 String p4Time;
+String chapelTime;
+String lunchTime;
+String chapel; //string holding what goes on between p2 and p3
 String textValue = "";
 
 
@@ -76,6 +79,9 @@ p1Time = "  (8:15 AM - 9:30 AM)";
 p2Time = "  (9:35 AM - 10:50 AM)";
 p3Time = "  (11:15 AM - 12:30 PM)";
 p4Time = "  (1:25 PM - 2:40 PM)";
+chapel = "Assembly";
+chapelTime = " 10:50 AM - 11:15 AM";
+lunchTime = " 12:30 PM - 1:25 PM";
 }
 
 boolean overRect(int x, int y, int width, int height) { // code snippet to form button from processing reference button example
@@ -96,6 +102,32 @@ boolean overTri(int x1, int y1, int x2, int y2, int x3, int y3, int px, int py) 
   return (abs(a1+a2+a3 - a0) <= 1/256);
 }
 
+String currentPeriod(int dayN, int hh, int mm) { //returns string of the current period taking place at school
+  if (dayN == 0 || dayN == 1 || dayN == 2 || dayN == 3 || dayN == 4) {
+    time = hh*60 + mm;
+    if (time >= 495 && time <= 570) { //check what period it is by counting the total minutes passed in the day using time int and checking if it is in the right timeframe of the period
+      return p1 + p1Time; //p1 is a string updated in draw with the class for that day number along with p2 p3 p4
+    }
+    if (time > 570 && time <= 650) {
+      return p2 + p2Time;
+    }
+    if (time > 650 && time <= 675) {
+      return chapel + chapelTime;
+    }
+    if (time > 675 && time <=750) {
+      return p3 + p3Time;
+    }
+    if (time > 750 && time <= 805) {
+      return "Lunch" + lunchTime;
+    }
+    if (time > 805 && time <= 880) {
+      return p4 + p4Time;
+    }
+  }else{
+    return "Not School Time";
+  }
+  return "NULLLLLLLL";
+}
 
 void textBox(int textX, int textY, int textWidth, int textHeight, String defaultText) {
   fill(255);
@@ -324,4 +356,5 @@ void draw() { //loop
   text("Period 2: " + p2, 10, 290);
   text("Period 3: " + p3, 10, 390);
   text("Period 4: " + p4, 10, 490);
+  text("Current Period: " + currentPeriod(dayNum, hour(), minute()), 10, 550);
 }
