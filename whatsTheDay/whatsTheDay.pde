@@ -54,6 +54,7 @@ String chapelTime;
 String lunchTime;
 String chapel; //string holding what goes on between p2 and p3
 String textValue = "";
+String currentPeriod; //string to update the current period
 
 
 void setup() { //code runs once
@@ -102,32 +103,6 @@ boolean overTri(int x1, int y1, int x2, int y2, int x3, int y3, int px, int py) 
   return (abs(a1+a2+a3 - a0) <= 1/256);
 }
 
-String currentPeriod(int dayN, int hh, int mm) { //returns string of the current period taking place at school
-  if (dayN == 0 || dayN == 1 || dayN == 2 || dayN == 3 || dayN == 4) {
-    time = hh*60 + mm;
-    if (time >= 495 && time <= 570) { //check what period it is by counting the total minutes passed in the day using time int and checking if it is in the right timeframe of the period
-      return p1 + p1Time; //p1 is a string updated in draw with the class for that day number along with p2 p3 p4
-    }
-    if (time > 570 && time <= 650) {
-      return p2 + p2Time;
-    }
-    if (time > 650 && time <= 675) {
-      return chapel + chapelTime;
-    }
-    if (time > 675 && time <=750) {
-      return p3 + p3Time;
-    }
-    if (time > 750 && time <= 805) {
-      return "Lunch" + lunchTime;
-    }
-    if (time > 805 && time <= 880) {
-      return p4 + p4Time;
-    }
-  }else{
-    return "Not School Time";
-  }
-  return "NULLLLLLLL";
-}
 
 void textBox(int textX, int textY, int textWidth, int textHeight, String defaultText) {
   fill(255);
@@ -273,28 +248,28 @@ void changeDate() { // function will be used to create a button allowing the use
 
 void update() { //function responsible for updating p1-p4 strings with the correct class depending on the day number
   if (dayNum == 1) {
-    p1 = "Comm. Tech" + p1Time;
-    p2 = "Gym" + p2Time;
-    p3 = "English" + p3Time;
-    p4 = "Instrumental" + p4Time;
+    p1 = "Comm. Tech";
+    p2 = "Gym";
+    p3 = "English";
+    p4 = "Instrumental";
   }
   if (dayNum == 2) {
-    p1 = "Science" + p1Time;
-    p2 = "Software" + p2Time;
-    p3 = "French" + p3Time;
-    p4 = "Math" + p4Time;
+    p1 = "Science";
+    p2 = "Software";
+    p3 = "French";
+    p4 = "Math";
   }
   if (dayNum == 3) {
-    p1 = "Instrumental" + p1Time;
-    p2 = "Gym" + p2Time;
-    p3 = "English" + p3Time;
-    p4 = "Comm. Tech" + p4Time;
+    p1 = "Instrumental";
+    p2 = "Gym";
+    p3 = "English";
+    p4 = "Comm. Tech";
   }
   if (dayNum == 4) {
-    p1 = "Math" + p1Time;
-    p2 = "Software" + p2Time;
-    p3 = "French" + p3Time;
-    p4 = "Science" + p4Time;
+    p1 = "Math";
+    p2 = "Software";
+    p3 = "French";
+    p4 = "Science";
   }
   if (dayNum == 9) {
     p1 = "H";
@@ -327,6 +302,30 @@ void update() { //function responsible for updating p1-p4 strings with the corre
       dayInput = 28;
     }
   }
+  //update currentPeriod string withe the class taking place
+  if (dayNum == 0 || dayNum == 1 || dayNum == 2 || dayNum == 3 || dayNum == 4) {
+    time = h*60 + m;
+    if (time >= 495 && time <= 570) { //check what period it is by counting the total minutes passed in the day using time int and checking if it is in the right timeframe of the period
+      currentPeriod = p1 + p1Time; //p1 is a string updated in draw with the class for that day number along with p2 p3 p4
+    }
+    if (time > 570 && time <= 650) {
+      currentPeriod = p2 + p2Time;
+    }
+    if (time > 650 && time <= 675) {
+      currentPeriod = chapel + chapelTime;
+    }
+    if (time > 675 && time <=750) {
+      currentPeriod = p3 + p3Time;
+    }
+    if (time > 750 && time <= 805) {
+      currentPeriod = "Lunch" + lunchTime;
+    }
+    if (time > 805 && time <= 880) {
+      currentPeriod = p4 + p4Time;
+    }
+  }else{
+    currentPeriod = "Not School Time";
+  }
 }
 void draw() { //loop
   s = second();  //update time variables to determine the day number and what period it is because draw function is a loop
@@ -336,7 +335,6 @@ void draw() { //loop
   d = day();
   background(255); //redraw background to prevent ghosting
   changeDate(); //call changeDate to check if someone pressed the button and change the day of the corresponding schedule
-  update(); // call update to keep Schedule up to date
   textSize(32); //add text styling
   fill(0);
   smooth();
@@ -350,11 +348,22 @@ void draw() { //loop
     text("Day " + dayNum, 10, 50);
   }
   text("Schedule:", 10, 120);
+  update(); // call update to keep Schedule up to date before drawing it
   //draw scheduele in the remaining canvas space
   textSize(17);
-  text("Period 1: " + p1, 10, 200);
-  text("Period 2: " + p2, 10, 290);
-  text("Period 3: " + p3, 10, 390);
-  text("Period 4: " + p4, 10, 490);
-  text("Current Period: " + currentPeriod(dayNum, hour(), minute()), 10, 550);
+  if (dayNum == 0 || dayNum == 1 || dayNum == 2 || dayNum == 3 || dayNum == 4) { //only add the time if it is an actual school day
+    text("Period 1: " + p1 + p1Time, 10, 200);
+    text("Period 2: " + p2 + p2Time, 10, 290);
+    text("Period 3: " + p3 + p3Time, 10, 390);
+    text("Period 4: " + p4 + p4Time, 10, 490);
+  }else{
+    text("Period 1: " + p1, 10, 200);
+    text("Period 2: " + p2, 10, 290);
+    text("Period 3: " + p3, 10, 390);
+    text("Period 4: " + p4, 10, 490);
+  }
+  textSize(25);
+  text("Current Period:", 10, 600);
+  textSize(17);
+  text(currentPeriod, 10, 630);
 }
