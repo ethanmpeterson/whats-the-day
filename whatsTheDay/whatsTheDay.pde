@@ -22,27 +22,27 @@ int rectX;
 int rectY;
 int rectWidth;
 int rectHeight;
-int monthX; //variables to store values for rectangle being drawn for the user to input the month
+int monthX; // variables to store values for rectangle being drawn for the user to input the month
 int monthY;
 int monthWidth;
 int monthHeight;
-int dayX; //variables to store values for rectangle being drawn for the user to input the day
+int dayX; // variables to store values for rectangle being drawn for the user to input the day
 int dayY;
 int dayWidth;
 int dayHeight;
 int dayInput;
 int monthInput;
-int time; //for returning the currenting period in currentPeriod function
-boolean cButtonPressed; //will record whether the change date button has been pressed or not
+int time; // for returning the currenting period in currentPeriod function
+boolean cButtonPressed; // will record whether the change date button has been pressed or not
 boolean triPressed; // records whether a triangular button has been pressed or not
 boolean monthSwitch; //records that user is has inputted the month and is ready to input the day
-boolean dayTriPressed; //records if the user has pressed the incriment or decriment buttons of the day text box
-boolean isFeb; //true if the month is february
+boolean dayTriPressed; // records if the user has pressed the incriment or decriment buttons of the day text box
+boolean isFeb; // true if the month is february
 boolean month31;
-boolean mouseC; //true if mouse is clicked then released
+boolean mouseC; // true if mouse is clicked then released
 boolean tPressed; //true if today button was pressed
 String hol; // holiday
-String p1;
+String p1; //strings to period 1 - 4 classes
 String p2;
 String p3;
 String p4;
@@ -55,7 +55,6 @@ String lunchTime;
 String chapel; //string holding what goes on between p2 and p3
 String textValue = "";
 String currentPeriod; //string to update the current period
-
 
 void setup() { //code runs once
 size(400, 700);
@@ -94,6 +93,7 @@ boolean overRect(int x, int y, int width, int height) { // code snippet to form 
   }
 }
 
+
 boolean overTri(int x1, int y1, int x2, int y2, int x3, int y3, int px, int py) { //code snippet from GitHub to detect collision of triangle and point
   int a0 = abs((x2-x1)*(y3-y1)-(x3-x1)*(y2-y1)); //https://github.com/jeffThompson/CollisionDetectionFunctionsForProcessing/blob/master/pointTriangle/pointTriangle.pde
   int a1 = abs((x1-px)*(y2-py)-(x2-px)*(y1-py));
@@ -113,6 +113,7 @@ void textBox(int textX, int textY, int textWidth, int textHeight, String default
   text(defaultText, textX + 5, textY + 15);
 }
 
+
 void button(int bx, int by, int bWidth, int bHeight, String bLabel, int textSize, int textX, int textY) {
   fill(255);
   stroke(5);
@@ -127,6 +128,39 @@ void button(int bx, int by, int bWidth, int bHeight, String bLabel, int textSize
     textSize(textSize);
     text(bLabel, textX, textY);
   }
+}
+
+String currentP() { //string returning the current period based on time in the school day
+  if (dayNum == 0 || dayNum == 1 || dayNum == 2 || dayNum == 3 || dayNum == 4) {
+    time = h*60 + m;
+    if (time >= 495 && time <= 570) { //check what period it is by counting the total minutes passed in the day using time int and checking if it is in the right timeframe of the period
+      currentPeriod = p1 + p1Time; //p1 is a string updated in draw with the class for that day number along with p2 p3 p4
+      return currentPeriod;
+    }
+    if (time > 570 && time <= 650) {
+      currentPeriod = p2 + p2Time;
+      return currentPeriod;
+    }
+    if (time > 650 && time <= 675) {
+      currentPeriod = chapel + chapelTime;
+      return currentPeriod;
+    }
+    if (time > 675 && time <=750) {
+      currentPeriod = p3 + p3Time;
+      return currentPeriod;
+    }
+    if (time > 750 && time <= 805) {
+      currentPeriod = "Lunch" + lunchTime;
+      return currentPeriod;
+    }
+    if (time > 805 && time <= 880) {
+      currentPeriod = p4 + p4Time;
+      return currentPeriod;
+    }
+  }else if (dayNum == 9) {
+    return "Holiday";
+  }
+  return "Not School Time";
 }
 
 void mouseClicked() {
@@ -245,6 +279,10 @@ void changeDate() { // function will be used to create a button allowing the use
   }
 }
 
+void changeTime() { //allowing user to change hour and minute to see what class would be taking place at that time on a certain day
+  
+}
+
 
 void update() { //function responsible for updating p1-p4 strings with the correct class depending on the day number
   if (dayNum == 1) {
@@ -277,6 +315,7 @@ void update() { //function responsible for updating p1-p4 strings with the corre
     p3 = "H";
     p4 = "H";
   }
+
   //update isFeb and month31 booleans here to make sure the month is being counted correctly and the array does not go out of bounds
   //and that each month has the correct amount of days in it
   if (monthInput == 1 || monthInput == 3 || monthInput == 5 || monthInput == 7 ||
@@ -302,31 +341,8 @@ void update() { //function responsible for updating p1-p4 strings with the corre
       dayInput = 28;
     }
   }
-  //update currentPeriod string withe the class taking place
-  if (dayNum == 0 || dayNum == 1 || dayNum == 2 || dayNum == 3 || dayNum == 4) {
-    time = h*60 + m;
-    if (time >= 495 && time <= 570) { //check what period it is by counting the total minutes passed in the day using time int and checking if it is in the right timeframe of the period
-      currentPeriod = p1 + p1Time; //p1 is a string updated in draw with the class for that day number along with p2 p3 p4
-    }
-    if (time > 570 && time <= 650) {
-      currentPeriod = p2 + p2Time;
-    }
-    if (time > 650 && time <= 675) {
-      currentPeriod = chapel + chapelTime;
-    }
-    if (time > 675 && time <=750) {
-      currentPeriod = p3 + p3Time;
-    }
-    if (time > 750 && time <= 805) {
-      currentPeriod = "Lunch" + lunchTime;
-    }
-    if (time > 805 && time <= 880) {
-      currentPeriod = p4 + p4Time;
-    }
-  }else{
-    currentPeriod = "Not School Time";
-  }
 }
+
 void draw() { //loop
   s = second();  //update time variables to determine the day number and what period it is because draw function is a loop
   m = minute();
@@ -362,8 +378,10 @@ void draw() { //loop
     text("Period 3: " + p3, 10, 390);
     text("Period 4: " + p4, 10, 490);
   }
-  textSize(25);
-  text("Current Period:", 10, 600);
-  textSize(17);
-  text(currentPeriod, 10, 630);
+  if (!cButtonPressed) {
+    textSize(25);
+    text("Current Period:", 10, 600);
+    textSize(17);
+    text(currentP(), 10, 630);
+  }
 }
